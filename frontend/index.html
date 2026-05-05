@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmPay HRMS – Login</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .pass-toggle { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:15px; }
+    .pass-wrap { position:relative; }
+  </style>
+</head>
+<body>
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">💼</div>
+      <div>
+        <div class="login-title">EmPay</div>
+        <div class="login-subtitle">Human Resource Management</div>
+      </div>
+    </div>
+
+    <div class="login-heading">Sign in to your account</div>
+    <div class="login-desc">Enter your credentials to continue</div>
+
+    <div id="login-error" style="display:none;background:var(--danger-light);border:1px solid var(--danger);color:var(--danger);padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px"></div>
+
+    <form onsubmit="doLogin(event)">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-control" id="email" type="email" placeholder="you@company.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="pass-wrap">
+          <input class="form-control" id="password" type="password" placeholder="Your password" required autocomplete="current-password" style="padding-right:36px">
+          <button type="button" class="pass-toggle" onclick="togglePass()">👁</button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:11px;margin-top:4px;font-size:14px">
+        Sign In
+      </button>
+    </form>
+
+    <div class="demo-creds">
+      <strong>Demo Credentials (all passwords: Admin@123)</strong>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px">
+        <code onclick="fillLogin('admin@empay.com')">admin@empay.com</code>
+        <span style="color:var(--text-muted)">Admin</span>
+        <code onclick="fillLogin('hr@empay.com')">hr@empay.com</code>
+        <span style="color:var(--text-muted)">HR Officer</span>
+        <code onclick="fillLogin('payroll@empay.com')">payroll@empay.com</code>
+        <span style="color:var(--text-muted)">Payroll Officer</span>
+        <code onclick="fillLogin('arjun@empay.com')">arjun@empay.com</code>
+        <span style="color:var(--text-muted)">Employee</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script>
+  if (Auth.isLoggedIn()) window.location.href = '/app.html';
+
+  async function doLogin(e) {
+    e.preventDefault();
+    const btn = document.getElementById('login-btn');
+    const err = document.getElementById('login-error');
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+    err.style.display = 'none';
+    try {
+      const data = await api.post('/auth/login', {
+        email:    document.getElementById('email').value,
+        password: document.getElementById('password').value,
+      });
+      Auth.save(data);
+      window.location.href = '/app.html#/dashboard';
+    } catch(ex) {
+      err.textContent = ex.message;
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  }
+
+  function fillLogin(email) {
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = 'Admin@123';
+    document.getElementById('email').focus();
+  }
+
+  function togglePass() {
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  }
+</script>
+</body>
+</html>

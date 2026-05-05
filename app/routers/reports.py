@@ -35,14 +35,18 @@ def dashboard(
 
     attendance_by_day = []
     if current_user.role != "employee":
-        rows = db.query(
-            Attendance.date,
-            func.count(Attendance.id).label("total"),
-            func.sum(func.cast(Attendance.status.in_([AttendanceStatus.present, AttendanceStatus.late]), int)).label("present"),
-        ).filter(
+        att_rows = db.query(Attendance).filter(
             Attendance.date.between(month_start, today)
-        ).group_by(Attendance.date).order_by(Attendance.date).all()
-        attendance_by_day = [{"date": str(r.date), "total": r.total, "present": r.present or 0} for r in rows]
+        ).all()
+        day_map: dict = {}
+        for a in att_rows:
+            d = str(a.date)
+            if d not in day_map:
+                day_map[d] = {"date": d, "total": 0, "present": 0}
+            day_map[d]["total"] += 1
+            if a.status in (AttendanceStatus.present, AttendanceStatus.late):
+                day_map[d]["present"] += 1
+        attendance_by_day = sorted(day_map.values(), key=lambda x: x["date"])
 
     dept_counts = []
     if current_user.role in ("admin", "hr_officer"):

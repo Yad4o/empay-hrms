@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmPay HRMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div id="layout">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">💼</div>
+      <div>
+        <div class="logo-text">EmPay</div>
+        <div class="logo-sub">HRMS</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="user-info-text">
+        <div class="user-name" id="sidebar-user-email" style="font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        <div class="user-role" id="sidebar-user-role"></div>
+      </div>
+      <button class="logout-btn" onclick="Auth.logout()" title="Logout">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main-content">
+    <div id="topbar">
+      <div>
+        <div id="page-title">Dashboard</div>
+        <div id="page-subtitle"></div>
+      </div>
+      <div class="topbar-actions">
+        <div style="font-size:12px;color:var(--text-muted);padding:6px 12px;background:var(--surface2);border-radius:20px" id="topbar-date"></div>
+      </div>
+    </div>
+    <div id="content-area"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="hidden" onclick="if(event.target===this)closeModal()">
+  <div id="modal-container"></div>
+</div>
+
+<!-- TOASTS -->
+<div id="toast-container"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script>
+  const Views = {};
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-IN', {weekday:'short',year:'numeric',month:'short',day:'numeric'});
+</script>
+<script src="/js/views/dashboard.js"></script>
+<script src="/js/views/employees.js"></script>
+<script src="/js/views/attendance.js"></script>
+<script src="/js/views/leaves.js"></script>
+<script src="/js/views/payroll.js"></script>
+<script src="/js/views/reports.js"></script>
+<script src="/js/views/settings.js"></script>
+<script src="/js/views/profile.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payslip – EmPay</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { background: var(--bg); padding: 24px; }
+    @media print {
+      body { background: white; color: #111; padding: 0; }
+      .payslip-container { border: none; box-shadow: none; }
+      .payslip-header { background: #7c3aed !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .payslip-net { background: #ede9fe !important; border-color: #7c3aed !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+<div class="no-print" style="margin-bottom:20px;display:flex;align-items:center;gap:12px">
+  <button class="btn btn-primary" onclick="window.print()">🖨 Print Payslip</button>
+  <button class="btn btn-outline" onclick="history.back()">← Back</button>
+</div>
+
+<div class="payslip-container" id="payslip-root">
+  <div style="text-align:center;padding:60px;color:var(--text-muted)">Loading payslip…</div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script>
+  if (!Auth.isLoggedIn()) window.location.href = '/index.html';
+
+  const params = new URLSearchParams(location.search);
+  const entryId = params.get('entry');
+
+  async function loadPayslip() {
+    if (!entryId) { document.getElementById('payslip-root').innerHTML = '<div style="text-align:center;padding:60px">No entry specified</div>'; return; }
+    const p = await api.get(`/payroll/entry/${entryId}/payslip`);
+
+    const fmt = n => '₹' + Number(n).toLocaleString('en-IN', {minimumFractionDigits:2});
+
+    document.title = `Payslip – ${p.employee_name} – ${p.pay_period}`;
+
+    document.getElementById('payslip-root').innerHTML = `
+      <div class="payslip-header">
+        <div>
+          <div class="payslip-company">EmPay</div>
+          <div class="payslip-label">Human Resource Management System</div>
+        </div>
+        <div class="payslip-period">
+          <div style="font-size:16px;font-weight:700">PAYSLIP</div>
+          <div style="opacity:0.85;margin-top:4px">${p.pay_period || '—'}</div>
+          <div style="opacity:0.65;font-size:12px;margin-top:2px">${p.pay_period_start} to ${p.pay_period_end}</div>
+        </div>
+      </div>
+
+      <div class="payslip-body">
+        <div class="payslip-emp-info">
+          <div>
+            <div class="payslip-info-label">Employee Name</div>
+            <div style="font-weight:600">${p.employee_name}</div>
+          </div>
+          <div>
+            <div class="payslip-info-label">Employee ID</div>
+            <div style="font-weight:600">${p.emp_id}</div>
+          </div>
+          <div>
+            <div class="payslip-info-label">Department</div>
+            <div>${p.department}</div>
+          </div>
+          <div>
+            <div class="payslip-info-label">Designation</div>
+            <div>${p.designation}</div>
+          </div>
+          <div>
+            <div class="payslip-info-label">Join Date</div>
+            <div>${p.join_date || '—'}</div>
+          </div>
+          <div>
+            <div class="payslip-info-label">PAN Number</div>
+            <div>${p.pan_number || '—'}</div>
+          </div>
+          <div>
+            <div class="payslip-info-label">Bank Account</div>
+            <div>${p.bank_account || '—'}</div>
+          </div>
+          <div>
+            <div class="payslip-info-label">IFSC Code</div>
+            <div>${p.ifsc_code || '—'}</div>
+          </div>
+        </div>
+
+        <!-- Attendance Summary -->
+        <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px 20px;margin-bottom:20px;display:flex;gap:28px;flex-wrap:wrap">
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text-secondary)">Working Days</div><div style="font-weight:700;font-size:18px">${p.working_days}</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text-secondary)">Present Days</div><div style="font-weight:700;font-size:18px;color:var(--success)">${p.present_days}</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text-secondary)">Leave Days</div><div style="font-weight:700;font-size:18px;color:var(--info)">${p.leave_days}</div></div>
+          <div style="text-align:center"><div style="font-size:11px;color:var(--text-secondary)">LOP Days</div><div style="font-weight:700;font-size:18px;color:var(--danger)">${p.lop_days}</div></div>
+        </div>
+
+        <div class="payslip-tables">
+          <div class="payslip-section">
+            <h4>Earnings</h4>
+            <div class="payslip-row"><span>Basic Salary</span><span class="payslip-amount-positive">${fmt(p.basic_salary)}</span></div>
+            <div class="payslip-row"><span>HRA</span><span class="payslip-amount-positive">${fmt(p.hra)}</span></div>
+            <div class="payslip-row"><span>Other Allowances</span><span class="payslip-amount-positive">${fmt(p.other_allowances)}</span></div>
+            <div class="payslip-row" style="font-weight:600;border-top:2px solid var(--border);margin-top:4px;padding-top:8px">
+              <span>Gross Salary</span><span class="payslip-amount-positive">${fmt(p.gross_salary)}</span>
+            </div>
+          </div>
+          <div class="payslip-section">
+            <h4>Deductions</h4>
+            <div class="payslip-row"><span>LOP Deduction (${p.lop_days}d)</span><span class="payslip-amount-negative">${fmt(p.lop_deduction)}</span></div>
+            <div class="payslip-row"><span>PF (Employee 12%)</span><span class="payslip-amount-negative">${fmt(p.pf_employee)}</span></div>
+            <div class="payslip-row"><span>PF (Employer 12%)</span><span style="color:var(--text-secondary)">${fmt(p.pf_employer)}</span></div>
+            <div class="payslip-row"><span>Professional Tax</span><span class="payslip-amount-negative">${fmt(p.professional_tax)}</span></div>
+            <div class="payslip-row" style="font-weight:600;border-top:2px solid var(--border);margin-top:4px;padding-top:8px">
+              <span>Total Deductions</span><span class="payslip-amount-negative">${fmt(p.total_deductions)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="payslip-net">
+          <div>
+            <div class="payslip-net-label">Net Pay</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">Amount Credited to Bank Account</div>
+          </div>
+          <div class="payslip-net-amount">${fmt(p.net_salary)}</div>
+        </div>
+
+        <div style="margin-top:24px;font-size:11px;color:var(--text-muted);text-align:center;border-top:1px solid var(--border);padding-top:16px">
+          This is a computer-generated payslip and does not require a signature. Generated by EmPay HRMS.
+        </div>
+      </div>`;
+  }
+
+  loadPayslip().catch(err => {
+    document.getElementById('payslip-root').innerHTML = `<div style="text-align:center;padding:60px;color:var(--danger)">Error: ${err.message}</div>`;
+  });
+</script>
+</body>
+</html>
