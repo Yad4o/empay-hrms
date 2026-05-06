@@ -52,7 +52,10 @@ Views.reports = async function(container) {
               <input class="form-control" id="att-y" type="number" value="${year}" style="width:90px" onchange="reloadAtt()">
               <select class="form-control" id="att-dept-r" style="width:160px" onchange="filterAttReport()">${deptOpts}</select>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px">${IC.print} Print</button>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline btn-sm" onclick="exportAttCsv()" style="display:inline-flex;align-items:center;gap:6px">${IC.doc} Export CSV</button>
+              <button class="btn btn-outline btn-sm" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px">${IC.print} Print</button>
+            </div>
           </div>
           <div class="card" style="padding:0">
             <div class="table-wrapper">
@@ -70,6 +73,14 @@ Views.reports = async function(container) {
             </div>
           </div>`;
         window.reloadAtt = () => loadAtt(document.getElementById('att-m').value, document.getElementById('att-y').value);
+        window.exportAttCsv = () => {
+          const m = document.getElementById('att-m').value;
+          const y = document.getElementById('att-y').value;
+          const a = document.createElement('a');
+          a.href = `/api/v1/reports/attendance-summary/export?month=${m}&year=${y}`;
+          a.download = `attendance_${y}_${String(m).padStart(2,'0')}.csv`;
+          a.click();
+        };
         window.filterAttReport = () => {
           const dept = document.getElementById('att-dept-r').value.toLowerCase();
           document.querySelectorAll('tbody tr').forEach(tr => {

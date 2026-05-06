@@ -1,6 +1,9 @@
+import csv
+import io
 from datetime import date
 from typing import Optional
 from fastapi import APIRouter, Depends, Query
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.database import get_db
@@ -114,6 +117,44 @@ def attendance_summary(
             "absent": last_day - present - half - on_leave,
         })
     return result
+
+
+@router.get("/attendance-summary/export")
+def export_attendance_csv(
+    month: Optional[int] = Query(None),
+    year: Optional[int] = Query(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_hr_payroll_or_admin),
+):
+    y = year or date.today().year
+    m = month or date.today().month
+    _, last_day = calendar.monthrange(y, m)
+    start = date(y, m, 1)
+    end = date(y, m, last_day)
+
+    employees = db.query(Employee).filter(Employee.is_active == True).all()
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Emp ID", "Name", "Department", "Present", "Half Day", "On Leave", "Absent", "Attendance %"])
+    for emp in employees:
+        records = db.query(Attendance).filter(
+            Attendance.employee_id == emp.id,
+            Attendance.date.between(start, end),
+        ).all()
+        present  = sum(1 for r in records if r.status in (AttendanceStatus.present, AttendanceStatus.late))
+        half     = sum(1 for r in records if r.status == AttendanceStatus.half_day)
+        on_leave = sum(1 for r in records if r.status == AttendanceStatus.on_leave)
+        absent   = last_day - present - half - on_leave
+        pct = round((present / last_day) * 100, 1) if last_day else 0
+        writer.writerow([emp.emp_id, emp.full_name, emp.department, present, half, on_leave, absent, f"{pct}%"])
+
+    output.seek(0)
+    filename = f"attendance_{y}_{str(m).zfill(2)}.csv"
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )
 
 
 @router.get("/leave-report")
