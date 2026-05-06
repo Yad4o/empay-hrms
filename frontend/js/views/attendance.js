@@ -68,6 +68,16 @@ Views.attendance = async function(container) {
           <table>
             <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
             <tbody>${rows}</tbody>
+            ${records.length ? `<tfoot><tr>
+              <td colspan="${cols.length - 2}" style="padding:10px 16px;color:var(--text-secondary);font-size:12px">
+                ${records.filter(r => r.status === 'present' || r.status === 'late').length} present,
+                ${records.filter(r => r.status === 'absent').length} absent,
+                ${records.filter(r => r.status === 'on_leave').length} on leave
+              </td>
+              <td colspan="2" style="padding:10px 16px;text-align:right;font-weight:600;font-size:13px">
+                Total: ${records.reduce((s,r) => s + (r.total_hours||0), 0).toFixed(1)}h
+              </td>
+            </tr></tfoot>` : ''}
           </table>
         </div>
       </div>`;
