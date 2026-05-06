@@ -8,10 +8,10 @@ Views.dashboard = async function(container) {
   const isEmp     = role === 'employee';
 
   const stats = [
-    { icon: IC.people,    label: 'Total Employees',       value: data.total_employees,    color: '#a5b4fc', bg: 'rgba(99,102,241,0.15)' },
-    { icon: IC.userCheck, label: 'Present Today',          value: data.present_today,      color: '#34d399', bg: 'rgba(16,185,129,0.15)' },
-    { icon: IC.umbrella,  label: 'Pending Leaves',         value: data.pending_leaves,     color: '#fbbf24', bg: 'rgba(245,158,11,0.15)' },
-    { icon: IC.payroll,   label: 'Last Payrun',            value: data.last_payrun || '—', color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', isText: true },
+    { icon: IC.people,    label: 'Total Employees',  value: data.total_employees,    color: '#0d9488', bg: 'rgba(13,148,136,0.1)' },
+    { icon: IC.userCheck, label: 'Present Today',     value: data.present_today,      color: '#16a34a', bg: 'rgba(22,163,74,0.1)' },
+    { icon: IC.umbrella,  label: 'Pending Leaves',    value: data.pending_leaves,     color: '#d97706', bg: 'rgba(217,119,6,0.1)' },
+    { icon: IC.payroll,   label: 'Last Payrun',       value: data.last_payrun || '—', color: '#0284c7', bg: 'rgba(2,132,199,0.1)', isText: true },
   ];
 
   const statsHtml = stats.map(s => `
@@ -20,7 +20,7 @@ Views.dashboard = async function(container) {
         ${s.icon}
       </div>
       <div>
-        <div class="stat-value" style="color:${s.color}">${s.value}</div>
+        <div class="stat-value" style="color:${s.color};font-size:${s.isText?'20px':'26px'}">${s.value}</div>
         <div class="stat-label">${s.label}</div>
       </div>
     </div>`).join('');
@@ -65,9 +65,9 @@ Views.dashboard = async function(container) {
   if (!isEmp) {
     const ls = data.leave_stats || {};
     const lsCards = [
-      { label: 'Pending',  count: ls.pending || 0,  color: '#fbbf24', bg: 'rgba(245,158,11,0.12)',  icon: IC.clock },
-      { label: 'Approved', count: ls.approved || 0, color: '#34d399', bg: 'rgba(16,185,129,0.12)', icon: IC.check },
-      { label: 'Rejected', count: ls.rejected || 0, color: '#f87171', bg: 'rgba(239,68,68,0.12)',  icon: IC.x },
+      { label: 'Pending',  count: ls.pending || 0,  color: '#d97706', bg: 'rgba(217,119,6,0.08)',  icon: IC.clock },
+      { label: 'Approved', count: ls.approved || 0, color: '#16a34a', bg: 'rgba(22,163,74,0.08)', icon: IC.check },
+      { label: 'Rejected', count: ls.rejected || 0, color: '#dc2626', bg: 'rgba(220,38,38,0.08)', icon: IC.x },
     ];
     leaveStatHtml = `
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px">
@@ -106,11 +106,12 @@ Views.dashboard = async function(container) {
         datasets: [{
           label: 'Present',
           data: trend.map(r => r.present),
-          borderColor: '#6366f1',
-          backgroundColor: 'rgba(99,102,241,0.12)',
+          borderColor: '#0d9488',
+          backgroundColor: 'rgba(13,148,136,0.1)',
           fill: true,
           tension: 0.4,
           pointRadius: 3,
+          pointBackgroundColor: '#0d9488',
         }],
       });
     } else {
@@ -125,9 +126,9 @@ Views.dashboard = async function(container) {
           labels: depts.map(d => d.department),
           datasets: [{
             data: depts.map(d => d.count),
-            backgroundColor: ['#6366f1','#ec4899','#38bdf8','#10b981','#f59e0b','#ef4444'],
+            backgroundColor: ['#0d9488','#0284c7','#8b5cf6','#16a34a','#f59e0b','#ef4444'],
             borderWidth: 2,
-            borderColor: '#0f1520',
+            borderColor: '#ffffff',
           }],
         });
       } else {
@@ -148,11 +149,11 @@ function renderDashChart(id, type, chartData) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#8b949e', font: { size: 11 }, boxWidth: 12 } },
+        legend: { labels: { color: '#475569', font: { size: 11 }, boxWidth: 12 } },
       },
       scales: type === 'line' ? {
-        x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#30363d' } },
-        y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#30363d' }, beginAtZero: true },
+        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#e2e8f0' } },
+        y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#e2e8f0' }, beginAtZero: true },
       } : undefined,
     },
   });
