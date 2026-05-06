@@ -77,10 +77,10 @@ def my_attendance(
     emp = _emp_for_user(db, current_user)
     q = db.query(Attendance).filter(Attendance.employee_id == emp.id)
     if month:
-        q = q.filter(Attendance.date.between(
-            date(year or date.today().year, month, 1),
-            date(year or date.today().year, month, 28),
-        ))
+        import calendar
+        y = year or date.today().year
+        _, last_day = calendar.monthrange(y, month)
+        q = q.filter(Attendance.date.between(date(y, month, 1), date(y, month, last_day)))
     return q.order_by(Attendance.date.desc()).all()
 
 
