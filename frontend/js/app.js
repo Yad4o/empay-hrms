@@ -41,6 +41,7 @@ function buildNav() {
     html += `<div class="nav-item" data-view="${key}" onclick="navigate('${key}')">
       <span class="nav-icon">${cfg.icon}</span>
       <span>${cfg.label}</span>
+      ${key === 'leaves' ? '<span id="leaves-badge" style="display:none;margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px"></span>' : ''}
     </div>`;
   }
   nav.innerHTML = html;
@@ -48,6 +49,16 @@ function buildNav() {
   document.getElementById('sidebar-user-avatar').textContent = Auth.initials(Auth.email);
   document.getElementById('sidebar-user-email').textContent = Auth.email;
   document.getElementById('sidebar-user-role').textContent = Auth.roleLabel();
+
+  if (['admin', 'hr_officer', 'payroll_officer'].includes(Auth.role)) {
+    api.get('/leaves?status=pending').then(list => {
+      const badge = document.getElementById('leaves-badge');
+      if (badge && list.length > 0) {
+        badge.textContent = list.length;
+        badge.style.display = '';
+      }
+    }).catch(() => {});
+  }
 }
 
 let currentView = null;
