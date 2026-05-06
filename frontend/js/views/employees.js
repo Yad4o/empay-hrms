@@ -223,12 +223,20 @@ Views.employees = async function(container) {
       date_of_birth:document.getElementById('ae-dob').value || null,
       address:      document.getElementById('ae-addr').value || null,
     };
+    const btn = document.querySelector('.modal-footer .btn-primary');
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
     try {
       await api.post('/employees', body);
       toast('Employee created successfully', 'success');
       closeModal();
       await render();
-    } catch(err) { toast(err.message, 'error'); }
+    } catch(err) {
+      toast(err.message, 'error');
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
   };
 };
 

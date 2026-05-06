@@ -125,16 +125,24 @@ Views.leaves = async function(container) {
   };
 
   window.submitLeave = async () => {
-    const body = {
-      leave_type: document.getElementById('al-type').value,
-      start_date: document.getElementById('al-start').value,
-      end_date:   document.getElementById('al-end').value,
-      reason:     document.getElementById('al-reason').value,
-    };
+    const start = document.getElementById('al-start').value;
+    const end   = document.getElementById('al-end').value;
+    const reason = document.getElementById('al-reason').value.trim();
+    if (!start || !end) { toast('Please select start and end dates', 'error'); return; }
+    if (!reason) { toast('Please provide a reason for the leave', 'error'); return; }
+    const body = { leave_type: document.getElementById('al-type').value, start_date: start, end_date: end, reason };
+    const btn = document.querySelector('.modal-footer .btn-primary');
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
     try {
       await api.post('/leaves/apply', body);
       toast('Leave application submitted','success'); closeModal(); await render();
-    } catch(err) { toast(err.message,'error'); }
+    } catch(err) {
+      toast(err.message,'error');
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
   };
 
   window.allocateLeave = async () => {
