@@ -45,7 +45,7 @@ Views.attendance = async function(container) {
         </div>
         <div style="display:flex;align-items:center;gap:12px">
           ${todayStatus?.marked ? `<span class="badge badge-success">✓ Marked — ${todayStatus.status}</span>` : '<span class="badge badge-warning">Not marked</span>'}
-          <button class="btn btn-primary" onclick="markAttendance()">${todayStatus?.marked ? 'Check Out' : 'Check In'}</button>
+          <button class="btn btn-primary" onclick="markAttendance()" style="display:inline-flex;align-items:center;gap:6px">${IC.clock} ${todayStatus?.marked ? 'Check Out' : 'Check In'}</button>
         </div>
       </div>` : '';
 
