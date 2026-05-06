@@ -52,6 +52,13 @@ Views.attendance = async function(container) {
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const monthOpts = months.map((m,i) => `<option value="${String(i+1).padStart(2,'0')}" ${String(i+1).padStart(2,'0')===month?'selected':''}>${m}</option>`).join('');
 
+    const depts = !isEmp ? [...new Set(records.map(r => r.department).filter(Boolean))] : [];
+    const deptFilter = !isEmp && depts.length ? `
+      <select class="form-control" id="att-dept" style="width:160px" onchange="filterByDept()">
+        <option value="">All Departments</option>
+        ${depts.map(d => `<option>${d}</option>`).join('')}
+      </select>` : '';
+
     container.innerHTML = `
       ${markBtn}
       <div class="card" style="padding:0">
@@ -59,9 +66,10 @@ Views.attendance = async function(container) {
           <div class="toolbar-left">
             <select class="form-control" id="att-month" style="width:150px" onchange="filterAtt()">${monthOpts}</select>
             <input class="form-control" id="att-year" type="number" value="${year}" style="width:90px" onchange="filterAtt()">
+            ${deptFilter}
           </div>
           <div class="toolbar-right">
-            <span style="font-size:13px;color:var(--text-secondary)">${records.length} records</span>
+            <span style="font-size:13px;color:var(--text-secondary)" id="att-count">${records.length} records</span>
           </div>
         </div>
         <div class="table-wrapper" style="margin-top:12px">
@@ -86,6 +94,18 @@ Views.attendance = async function(container) {
       document.getElementById('att-month').value,
       document.getElementById('att-year').value,
     );
+    window.filterByDept = () => {
+      const dept = document.getElementById('att-dept').value.toLowerCase();
+      const rows = document.querySelectorAll('tbody tr');
+      let visible = 0;
+      rows.forEach(tr => {
+        const show = !dept || tr.textContent.toLowerCase().includes(dept);
+        tr.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      const el = document.getElementById('att-count');
+      if (el) el.textContent = `${visible} records`;
+    };
     window.markAttendance = async () => {
       try {
         await api.post('/attendance/mark', { status: 'present' });
