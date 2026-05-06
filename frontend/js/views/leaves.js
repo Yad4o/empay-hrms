@@ -102,13 +102,24 @@ Views.leaves = async function(container) {
     };
   }
 
-  window.applyLeave = () => {
+  window.applyLeave = async () => {
+    const myBalance = isEmp ? await api.get('/leaves/balance').catch(() => []) : [];
+    const balMap = {};
+    myBalance.forEach(b => { balMap[b.leave_type] = b.remaining_days; });
+
+    const balanceHint = (type) => balMap[type] !== undefined
+      ? `<span style="float:right;color:var(--info);font-size:11px">${balMap[type]} days remaining</span>`
+      : '';
+
     openModal(`<div class="modal"><div class="modal-header"><h3 class="modal-title">Apply for Leave</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
       <div class="modal-body">
-        <div class="form-group"><label class="form-label">Leave Type</label>
-          <select class="form-control" id="al-type">
-            <option value="annual">Annual</option><option value="sick">Sick</option>
-            <option value="casual">Casual</option><option value="unpaid">Unpaid</option>
+        <div class="form-group">
+          <label class="form-label">Leave Type <span id="al-bal-hint"></span></label>
+          <select class="form-control" id="al-type" onchange="document.getElementById('al-bal-hint').innerHTML = ${JSON.stringify(balMap)} ? (${JSON.stringify(balMap)}[this.value] !== undefined ? '<span style=\\'color:var(--info);font-size:11px\\'>' + ${JSON.stringify(balMap)}[this.value] + ' days remaining</span>' : '') : ''">
+            <option value="annual">Annual ${balMap.annual !== undefined ? '('+balMap.annual+'d left)' : ''}</option>
+            <option value="sick">Sick ${balMap.sick !== undefined ? '('+balMap.sick+'d left)' : ''}</option>
+            <option value="casual">Casual ${balMap.casual !== undefined ? '('+balMap.casual+'d left)' : ''}</option>
+            <option value="unpaid">Unpaid (no deduction from balance)</option>
           </select>
         </div>
         <div class="form-grid">
