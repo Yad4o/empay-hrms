@@ -24,17 +24,23 @@ Views.leaves = async function(container) {
       return `<span class="badge ${m[t]||'badge-muted'}">${t}</span>`;
     };
 
+    const leaveTypeColor = { annual: '#0d9488', sick: '#dc2626', casual: '#0284c7', unpaid: '#94a3b8' };
     const balanceHtml = isEmp && balance.length ? `
       <div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap">
-        ${balance.map(b => `
-          <div class="card" style="flex:1;min-width:140px;text-align:center">
-            <div style="font-size:11px;color:var(--text-secondary);text-transform:capitalize;margin-bottom:8px">${b.leave_type.replace('_',' ')}</div>
-            <div style="font-size:26px;font-weight:700;color:var(--primary)">${b.remaining_days}</div>
-            <div style="font-size:11px;color:var(--text-muted)">of ${b.allocated_days} days left</div>
-            <div style="margin-top:8px;background:var(--surface2);border-radius:4px;height:4px">
-              <div style="background:var(--primary);border-radius:4px;height:100%;width:${Math.min(100,(b.remaining_days/b.allocated_days)*100)}%"></div>
+        ${balance.map(b => {
+          const pct = Math.min(100, b.allocated_days ? (b.remaining_days / b.allocated_days) * 100 : 0);
+          const color = leaveTypeColor[b.leave_type] || '#0d9488';
+          const used = b.allocated_days - b.remaining_days;
+          return `
+          <div class="card" style="flex:1;min-width:150px">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted);margin-bottom:10px">${b.leave_type.replace('_',' ')} Leave</div>
+            <div style="font-size:28px;font-weight:800;color:${color};line-height:1">${b.remaining_days}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:3px">${used} used · ${b.allocated_days} total</div>
+            <div style="margin-top:10px;background:var(--surface2);border-radius:4px;height:5px;overflow:hidden">
+              <div style="background:${color};border-radius:4px;height:100%;width:${pct}%;transition:width 0.3s"></div>
             </div>
-          </div>`).join('')}
+          </div>`;
+        }).join('')}
       </div>` : '';
 
     const rows = leaves.map(l => `
