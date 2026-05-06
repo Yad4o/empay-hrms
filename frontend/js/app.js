@@ -66,6 +66,8 @@ function buildNav() {
         badge.textContent = list.length;
         badge.style.display = '';
       }
+      const dot = document.getElementById('topbar-bell-dot');
+      if (dot && list.length > 0) dot.style.display = '';
     }).catch(() => {});
   }
 }
