@@ -8,16 +8,16 @@ Views.dashboard = async function(container) {
   const isEmp     = role === 'employee';
 
   const stats = [
-    { icon: '👥', label: 'Total Employees',       value: data.total_employees,    color: '#7c3aed', bg: 'rgba(124,58,237,0.15)' },
-    { icon: '✅', label: 'Present Today',          value: data.present_today,      color: '#10b981', bg: 'rgba(16,185,129,0.15)' },
-    { icon: '📤', label: 'Pending Leave Requests', value: data.pending_leaves,     color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
-    { icon: '💼', label: 'Last Payrun',            value: data.last_payrun || '—', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)', isText: true },
+    { icon: IC.people,    label: 'Total Employees',       value: data.total_employees,    color: '#a5b4fc', bg: 'rgba(99,102,241,0.15)' },
+    { icon: IC.userCheck, label: 'Present Today',          value: data.present_today,      color: '#34d399', bg: 'rgba(16,185,129,0.15)' },
+    { icon: IC.umbrella,  label: 'Pending Leaves',         value: data.pending_leaves,     color: '#fbbf24', bg: 'rgba(245,158,11,0.15)' },
+    { icon: IC.payroll,   label: 'Last Payrun',            value: data.last_payrun || '—', color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', isText: true },
   ];
 
   const statsHtml = stats.map(s => `
     <div class="stat-card">
-      <div class="stat-icon" style="background:${s.bg}">
-        <span style="font-size:22px">${s.icon}</span>
+      <div class="stat-icon" style="background:${s.bg};color:${s.color}">
+        ${s.icon}
       </div>
       <div>
         <div class="stat-value" style="color:${s.color}">${s.value}</div>
@@ -47,7 +47,7 @@ Views.dashboard = async function(container) {
         <td><strong>${p.period}</strong></td>
         <td>₹${Number(p.total).toLocaleString('en-IN')}</td>
         <td><span class="badge ${p.status === 'paid' ? 'badge-success' : p.status === 'processed' ? 'badge-info' : 'badge-warning'}">${p.status}</span></td>
-        <td><button class="btn btn-outline btn-sm" onclick="navigate('payroll')">View</button></td>
+        <td><button class="btn btn-outline btn-sm" onclick="navigate('payroll')" style="display:inline-flex;align-items:center;gap:5px">${IC.eye} View</button></td>
       </tr>`).join('');
     payrollTable = `
       <div class="card" style="margin-top:24px">
@@ -64,20 +64,21 @@ Views.dashboard = async function(container) {
   let leaveStatHtml = '';
   if (!isEmp) {
     const ls = data.leave_stats || {};
+    const lsCards = [
+      { label: 'Pending',  count: ls.pending || 0,  color: '#fbbf24', bg: 'rgba(245,158,11,0.12)',  icon: IC.clock },
+      { label: 'Approved', count: ls.approved || 0, color: '#34d399', bg: 'rgba(16,185,129,0.12)', icon: IC.check },
+      { label: 'Rejected', count: ls.rejected || 0, color: '#f87171', bg: 'rgba(239,68,68,0.12)',  icon: IC.x },
+    ];
     leaveStatHtml = `
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px">
-        <div class="card" style="text-align:center;padding:16px">
-          <div style="font-size:28px;font-weight:700;color:#f59e0b">${ls.pending || 0}</div>
-          <div style="font-size:12px;color:var(--text-secondary);margin-top:4px">Pending Leaves</div>
-        </div>
-        <div class="card" style="text-align:center;padding:16px">
-          <div style="font-size:28px;font-weight:700;color:#10b981">${ls.approved || 0}</div>
-          <div style="font-size:12px;color:var(--text-secondary);margin-top:4px">Approved Leaves</div>
-        </div>
-        <div class="card" style="text-align:center;padding:16px">
-          <div style="font-size:28px;font-weight:700;color:#ef4444">${ls.rejected || 0}</div>
-          <div style="font-size:12px;color:var(--text-secondary);margin-top:4px">Rejected Leaves</div>
-        </div>
+        ${lsCards.map(c => `
+        <div class="card" style="display:flex;align-items:center;gap:16px;padding:18px">
+          <div style="width:46px;height:46px;border-radius:12px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;flex-shrink:0">${c.icon}</div>
+          <div>
+            <div style="font-size:26px;font-weight:800;color:${c.color};line-height:1">${c.count}</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">${c.label} Leaves</div>
+          </div>
+        </div>`).join('')}
       </div>`;
   }
 
@@ -89,8 +90,12 @@ Views.dashboard = async function(container) {
       ${payrollTable}
     </div>`;
 
-  document.getElementById('page-title').textContent = 'Dashboard';
-  document.getElementById('page-subtitle').textContent = `Welcome back · ${Auth.roleLabel()}`;
+  const hr = new Date().getHours();
+  const greeting = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  const name = Auth.email ? Auth.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
+  document.getElementById('page-title').textContent = `${greeting}${name ? ', '+name : ''}`;
+  document.getElementById('page-subtitle').textContent = `${Auth.roleLabel()} · ${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}`;
+
 
   // Render charts after DOM is ready
   if (!isEmp) {
