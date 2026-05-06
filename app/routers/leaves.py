@@ -130,10 +130,13 @@ def reject_leave(
     if req.status != LeaveStatus.pending:
         raise HTTPException(status_code=400, detail="Leave is not pending")
 
+    if not data.rejection_reason or not data.rejection_reason.strip():
+        raise HTTPException(status_code=400, detail="Rejection reason is required")
+
     req.status = LeaveStatus.rejected
     req.approved_by = current_user.id
     req.approved_at = datetime.utcnow()
-    req.rejection_reason = data.rejection_reason
+    req.rejection_reason = data.rejection_reason.strip()
     db.commit()
     db.refresh(req)
     return _enrich(req, db)
