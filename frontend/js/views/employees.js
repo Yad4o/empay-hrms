@@ -45,7 +45,7 @@ Views.employees = async function(container) {
     <div class="toolbar">
       <div class="toolbar-left">
         <div class="search-box">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon">${IC.search}</span>
           <input class="form-control" id="emp-search" placeholder="Search employees…" oninput="empSearch()">
         </div>
         <select class="form-control" id="emp-dept" onchange="empSearch()" style="width:180px">
@@ -250,7 +250,7 @@ Views.directory = async function(container) {
     <div class="toolbar">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input class="form-control" id="dir-search" placeholder="Search…" oninput="dirFilter()">
+        <input class="form-control" id="dir-search" placeholder="Search by name or department…" oninput="dirFilter()">
       </div>
     </div>
     <div id="dir-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px">
