@@ -196,6 +196,14 @@ Views.employees = async function(container) {
   };
 
   window.createEmployee = async () => {
+    const required = { 'ae-fn': 'First Name', 'ae-ln': 'Last Name', 'ae-email': 'Email', 'ae-dept': 'Department', 'ae-des': 'Designation', 'ae-jd': 'Join Date', 'ae-bs': 'Basic Salary' };
+    for (const [id, label] of Object.entries(required)) {
+      if (!document.getElementById(id).value.trim()) {
+        toast(`${label} is required`, 'error');
+        document.getElementById(id).focus();
+        return;
+      }
+    }
     const body = {
       first_name:   document.getElementById('ae-fn').value,
       last_name:    document.getElementById('ae-ln').value,
