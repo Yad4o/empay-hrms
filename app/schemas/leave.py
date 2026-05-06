@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 from app.models.leave import LeaveType, LeaveStatus
 
 
@@ -49,7 +49,11 @@ class LeaveBalanceOut(BaseModel):
     year: int
     allocated_days: float
     used_days: float
-    remaining_days: float
+    remaining_days: float = 0.0
+
+    @field_serializer('remaining_days')
+    def serialize_remaining_days(self, value: float, _info):
+        return max(0, self.allocated_days - self.used_days)
 
     class Config:
         from_attributes = True

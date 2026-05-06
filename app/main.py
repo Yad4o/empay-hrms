@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine
 from app.models import user, employee, attendance, leave, payroll  # noqa: ensure all models registered
 from app.database import Base, SessionLocal
-from app.routers import auth, employees, attendance as att_router, leaves, payroll as pay_router, reports, settings
+from app.routers import auth, employees, attendance as att_router, leaves, payroll as pay_router, reports, settings as settings_router
 
 
 @asynccontextmanager
@@ -39,7 +39,7 @@ app.include_router(att_router.router, prefix="/api/v1/attendance", tags=["Attend
 app.include_router(leaves.router, prefix="/api/v1/leaves", tags=["Leaves"])
 app.include_router(pay_router.router, prefix="/api/v1/payroll", tags=["Payroll"])
 app.include_router(reports.router, prefix="/api/v1/reports", tags=["Reports"])
-app.include_router(settings.router, prefix="/api/v1/settings", tags=["Settings"])
+app.include_router(settings_router.router, prefix="/api/v1/settings", tags=["Settings"])
 
 @app.get("/health")
 def health_check():

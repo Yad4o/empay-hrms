@@ -1,6 +1,6 @@
 from datetime import date
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_serializer
 
 
 class EmployeeCreate(BaseModel):
@@ -55,7 +55,7 @@ class EmployeeOut(BaseModel):
     basic_salary: float
     hra_percent: float
     other_allowances: float
-    gross_salary: float
+    gross_salary: float = 0.0
     address: Optional[str]
     gender: Optional[str]
     date_of_birth: Optional[date]
@@ -63,6 +63,10 @@ class EmployeeOut(BaseModel):
     ifsc_code: Optional[str]
     pan_number: Optional[str]
     is_active: bool
+
+    @field_serializer('gross_salary')
+    def serialize_gross_salary(self, value: float, _info):
+        return self.basic_salary + (self.basic_salary * self.hra_percent / 100) + self.other_allowances
 
     class Config:
         from_attributes = True
