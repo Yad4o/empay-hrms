@@ -40,6 +40,7 @@ const VIEWS = {
   reports:    { label: 'Reports',    icon: IC.chart,     render: Views.reports,    roles: ['admin','hr_officer','payroll_officer'] },
   settings:   { label: 'Settings',  icon: IC.sliders,   render: Views.settings,   roles: ['admin'] },
   profile:    { label: 'My Profile', icon: IC.user,      render: Views.profile,    roles: null },
+  help:       { label: 'Help',       icon: IC.help,      render: Views.help,       roles: null },
 };
 
 function buildNav() {
@@ -47,6 +48,7 @@ function buildNav() {
   let html = '';
   for (const [key, cfg] of Object.entries(VIEWS)) {
     if (cfg.roles && !cfg.roles.includes(Auth.role)) continue;
+    if (key === 'help') html += `<div style="height:1px;background:var(--sidebar-border);margin:8px 14px"></div>`;
     html += `<div class="nav-item" data-view="${key}" onclick="navigate('${key}')">
       <span class="nav-icon">${cfg.icon}</span>
       <span>${cfg.label}</span>
