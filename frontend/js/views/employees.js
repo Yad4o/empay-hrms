@@ -255,7 +255,7 @@ Views.directory = async function(container) {
     </div>
     <div id="dir-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px">
       ${emps.map(e => `
-        <div class="card" style="text-align:center;padding:28px 20px">
+        <div class="card" style="text-align:center;padding:28px 20px;cursor:pointer;transition:transform 0.18s,box-shadow 0.18s" onclick="viewEmployee(${e.id})" onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px rgba(0,0,0,0.4)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
           <div class="emp-avatar" style="width:56px;height:56px;font-size:20px;margin:0 auto 12px">${e.first_name[0]}${e.last_name[0]}</div>
           <div style="font-weight:600">${e.first_name} ${e.last_name}</div>
           <div style="color:var(--text-secondary);font-size:12px;margin:4px 0">${e.designation}</div>
