@@ -38,6 +38,8 @@ def list_employees(
     search: Optional[str] = Query(None),
     department: Optional[str] = Query(None),
     is_active: Optional[bool] = Query(None),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=500),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -55,7 +57,7 @@ def list_employees(
         q = q.filter(Employee.department == department)
     if is_active is not None:
         q = q.filter(Employee.is_active == is_active)
-    return q.all()
+    return q.offset(skip).limit(limit).all()
 
 
 @router.post("", response_model=EmployeeOut)
