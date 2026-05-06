@@ -24,8 +24,8 @@ Views.settings = async function(container) {
         <td><span class="badge ${u.is_active ? 'badge-success' : 'badge-danger'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
         <td>
           <div style="display:flex;gap:6px">
-            <button class="btn btn-outline btn-sm" onclick="editUser(${u.id}, '${u.role}', ${u.is_active})">Edit Role</button>
-            ${u.id !== parseInt(Auth.userId) ? `<button class="btn btn-ghost btn-sm" onclick="toggleUser(${u.id}, ${u.is_active})">${u.is_active ? 'Disable' : 'Enable'}</button>` : ''}
+            <button class="btn btn-outline btn-sm" onclick="editUser(${u.id}, '${u.role}', ${u.is_active})" style="display:inline-flex;align-items:center;gap:5px">${IC.edit} Edit Role</button>
+            ${u.id !== parseInt(Auth.userId) ? `<button class="btn btn-ghost btn-sm" onclick="toggleUser(${u.id}, ${u.is_active})" style="display:inline-flex;align-items:center;gap:5px">${u.is_active ? IC.x+' Disable' : IC.check+' Enable'}</button>` : ''}
           </div>
         </td>
       </tr>`).join('');
@@ -33,7 +33,7 @@ Views.settings = async function(container) {
     container.innerHTML = `
       <div class="toolbar">
         <div style="font-size:13px;color:var(--text-secondary)">${users.length} total users</div>
-        <button class="btn btn-primary" onclick="addUser()">+ Add User</button>
+        <button class="btn btn-primary" onclick="addUser()" style="display:inline-flex;align-items:center;gap:6px">${IC.plus} Add User</button>
       </div>
       <div class="card" style="padding:0">
         <div class="table-wrapper">
