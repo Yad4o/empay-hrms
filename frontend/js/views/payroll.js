@@ -20,9 +20,9 @@ Views.payroll = async function(container) {
         <td>${new Date(p.created_at).toLocaleDateString('en-IN')}</td>
         <td>
           <div style="display:flex;gap:6px">
-            <button class="btn btn-outline btn-sm" onclick="viewPayrun(${p.id})">View Entries</button>
-            ${p.status === 'draft' ? `<button class="btn btn-primary btn-sm" onclick="processPayrun(${p.id})">Process</button>` : ''}
-            ${p.status === 'processed' ? `<button class="btn btn-success btn-sm" onclick="markPaid(${p.id})">Mark Paid</button>` : ''}
+            <button class="btn btn-outline btn-sm" onclick="viewPayrun(${p.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.eye} View</button>
+            ${p.status === 'draft' ? `<button class="btn btn-primary btn-sm" onclick="processPayrun(${p.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.zap} Process</button>` : ''}
+            ${p.status === 'processed' ? `<button class="btn btn-success btn-sm" onclick="markPaid(${p.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.check} Mark Paid</button>` : ''}
           </div>
         </td>
       </tr>`).join('') || `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💰</div><h3>No payruns yet</h3><p>Generate your first payrun below</p></div></td></tr>`;
@@ -30,7 +30,7 @@ Views.payroll = async function(container) {
     container.innerHTML = `
       <div class="toolbar">
         <div></div>
-        <button class="btn btn-primary" onclick="createPayrun()">+ Generate Payrun</button>
+        <button class="btn btn-primary" onclick="createPayrun()" style="display:inline-flex;align-items:center;gap:6px">${IC.zap} Generate Payrun</button>
       </div>
       <div class="card" style="padding:0">
         <div class="table-wrapper">
@@ -68,7 +68,7 @@ Views.payroll = async function(container) {
           <td>₹${Number(e.gross_salary).toLocaleString('en-IN')}</td>
           <td style="color:var(--danger)">-₹${Number(e.total_deductions).toLocaleString('en-IN')}</td>
           <td><strong style="color:var(--success)">₹${Number(e.net_salary).toLocaleString('en-IN')}</strong></td>
-          <td><button class="btn btn-ghost btn-sm" onclick="openPayslip(${e.id})">📄 Payslip</button></td>
+          <td><button class="btn btn-ghost btn-sm" onclick="openPayslip(${e.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.doc} Payslip</button></td>
         </tr>`).join('');
 
       const totalNet = entries.reduce((s,e) => s + e.net_salary, 0);
