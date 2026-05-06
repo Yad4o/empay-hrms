@@ -28,6 +28,7 @@ class Employee(Base):
     pan_number = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", back_populates="employee")
     attendance_records = relationship("Attendance", back_populates="employee", cascade="all, delete-orphan")
