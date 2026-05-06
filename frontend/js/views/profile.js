@@ -26,8 +26,8 @@ Views.profile = async function(container) {
         ${emp ? `
         <div class="card" style="margin-bottom:20px">
           <div class="section-header">
-            <span class="section-title">Personal Details</span>
-            <button class="btn btn-outline btn-sm" onclick="editProfile()">Edit</button>
+            <span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.user} Personal Details</span>
+            <button class="btn btn-outline btn-sm" onclick="editProfile()" style="display:inline-flex;align-items:center;gap:5px">${IC.edit} Edit</button>
           </div>
           <div class="form-grid" style="margin-top:12px">
             ${infoRow('Email', emp.email)} ${infoRow('Phone', emp.phone||'—')}
@@ -36,7 +36,7 @@ Views.profile = async function(container) {
           </div>
         </div>
         <div class="card" style="margin-bottom:20px">
-          <div class="section-header"><span class="section-title">Salary Information</span></div>
+          <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.dollar} Salary Information</span></div>
           <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:20px;margin-top:12px">
             <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">Basic Salary</div>
             <div style="font-size:28px;font-weight:700;color:var(--primary)">₹${Number(emp.basic_salary).toLocaleString('en-IN')}</div>
@@ -48,7 +48,7 @@ Views.profile = async function(container) {
           </div>
         </div>
         <div class="card" style="margin-bottom:20px">
-          <div class="section-header"><span class="section-title">Bank & Tax Details</span></div>
+          <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.shield} Bank & Tax Details</span></div>
           <div class="form-grid" style="margin-top:12px">
             ${infoRow('Bank Account', emp.bank_account||'—')} ${infoRow('IFSC Code', emp.ifsc_code||'—')}
             ${infoRow('PAN Number', emp.pan_number||'—')}
@@ -56,12 +56,12 @@ Views.profile = async function(container) {
         </div>` : `<div class="card"><div class="empty-state"><div class="empty-icon">👤</div><h3>No employee profile linked</h3><p>Contact HR to set up your profile</p></div></div>`}
 
         <div class="card" style="margin-bottom:20px">
-          <div class="section-header"><span class="section-title">Recent Attendance</span></div>
+          <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.calendar} Recent Attendance</span></div>
           <div id="profile-att-table" style="margin-top:8px"><div style="color:var(--text-muted);font-size:13px">Loading…</div></div>
         </div>
 
         <div class="card">
-          <div class="section-header"><span class="section-title">Change Password</span></div>
+          <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.shield} Change Password</span></div>
           <div style="margin-top:12px;max-width:360px">
             <div class="form-group"><label class="form-label">Current Password</label><input class="form-control" id="cp-cur" type="password"></div>
             <div class="form-group"><label class="form-label">New Password</label><input class="form-control" id="cp-new" type="password"></div>
