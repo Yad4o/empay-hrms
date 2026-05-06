@@ -320,7 +320,7 @@ Views.help = function(container) {
       </div>
 
       <!-- Shortcuts + FAQ side by side -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px">
+      <div class="help-side-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px">
 
         <div class="card">
           <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:7px">${IC.key} Keyboard Shortcuts</div>

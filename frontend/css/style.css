@@ -622,6 +622,7 @@ select.form-control { cursor: pointer; }
   #content-area { padding: 16px; }
   .login-left { display: none; }
   .login-right { width: 100%; }
+  .help-side-grid { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 640px) {
