@@ -11,6 +11,33 @@ Views.settings = async function(container) {
       return `<span class="badge ${m[r]||'badge-muted'}">${labels[r]||r}</span>`;
     };
 
+    const activeCount   = users.filter(u => u.is_active).length;
+    const roleCount = (r) => users.filter(u => u.role === r).length;
+
+    const summaryCards = `
+      <div style="display:flex;gap:14px;margin-bottom:24px;flex-wrap:wrap">
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--success)">
+          <div style="font-size:22px;font-weight:800;color:var(--success)">${activeCount}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Active Users</div>
+        </div>
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--danger)">
+          <div style="font-size:22px;font-weight:800;color:var(--danger)">${roleCount('admin')}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Admins</div>
+        </div>
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--accent)">
+          <div style="font-size:22px;font-weight:800;color:var(--accent)">${roleCount('hr_officer')}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">HR Officers</div>
+        </div>
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--warning)">
+          <div style="font-size:22px;font-weight:800;color:var(--warning)">${roleCount('payroll_officer')}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Payroll</div>
+        </div>
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--info)">
+          <div style="font-size:22px;font-weight:800;color:var(--info)">${roleCount('employee')}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Employees</div>
+        </div>
+      </div>`;
+
     const rows = users.map(u => `
       <tr>
         <td>${u.id}</td>
@@ -31,6 +58,7 @@ Views.settings = async function(container) {
       </tr>`).join('');
 
     container.innerHTML = `
+      ${summaryCards}
       <div class="toolbar">
         <div style="font-size:13px;color:var(--text-secondary)">${users.length} total users</div>
         <button class="btn btn-primary" onclick="addUser()" style="display:inline-flex;align-items:center;gap:6px">${IC.plus} Add User</button>
