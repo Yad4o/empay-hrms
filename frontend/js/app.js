@@ -74,12 +74,16 @@ function buildNav() {
 
 let currentView = null;
 
-async function navigate(view) {
+async function navigate(view, pushHistory = true) {
   if (!VIEWS[view]) view = 'dashboard';
   if (VIEWS[view].roles && !VIEWS[view].roles.includes(Auth.role)) {
     view = 'dashboard';
   }
   currentView = view;
+
+  if (pushHistory && location.hash !== `#/${view}`) {
+    history.pushState(null, '', `#/${view}`);
+  }
 
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.view === view);
@@ -100,10 +104,10 @@ async function navigate(view) {
 // ── Route by hash ─────────────────────────────────
 function routeFromHash() {
   const hash = location.hash.slice(2) || 'dashboard';
-  navigate(hash);
+  navigate(hash, false);
 }
 
-window.addEventListener('hashchange', routeFromHash);
+window.addEventListener('popstate', routeFromHash);
 
 // ── Mobile sidebar auto-close ─────────────────────
 document.addEventListener('click', e => {
