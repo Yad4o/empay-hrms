@@ -2,6 +2,8 @@ Views.help = function(container) {
   document.getElementById('page-title').textContent = 'Help & Guide';
   document.getElementById('page-subtitle').textContent = 'Everything you can do in EmPay';
 
+  localStorage.setItem(`empay_help_seen_${Auth.email}`, '1');
+
   const role = Auth.role;
 
   const ROLE_META = {

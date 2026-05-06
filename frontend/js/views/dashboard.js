@@ -82,8 +82,21 @@ Views.dashboard = async function(container) {
       </div>`;
   }
 
+  const helpKey = `empay_help_seen_${Auth.email}`;
+  const helpBanner = !localStorage.getItem(helpKey) ? `
+    <div style="display:flex;align-items:center;gap:14px;background:rgba(13,148,136,0.07);border:1px solid rgba(13,148,136,0.2);border-radius:12px;padding:14px 18px;margin-bottom:20px">
+      <div style="color:#0d9488;flex-shrink:0">${IC.help}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">New here? Check the Help guide</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">See everything your role can do, quick actions, and FAQs tailored for you.</div>
+      </div>
+      <button onclick="navigate('help')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#0d9488;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">Open Guide ${IC.arrowRight}</button>
+      <button onclick="localStorage.setItem('${helpKey}','1');this.closest('[style]').remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;line-height:1;font-size:18px" title="Dismiss">✕</button>
+    </div>` : '';
+
   container.innerHTML = `
     <div>
+      ${helpBanner}
       <div class="stat-grid">${statsHtml}</div>
       ${chartsHtml}
       ${leaveStatHtml}
