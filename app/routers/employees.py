@@ -1,12 +1,13 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.database import get_db
 from app.models.employee import Employee
 from app.models.user import User, UserRole
 from app.models.leave import LeaveBalance, LeaveType
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeOut
-from app.utils.auth import get_current_user, require_hr_or_admin
+from app.utils.auth import get_current_user, require_hr_or_admin, require_hr_payroll_or_admin
 from app.utils.auth import hash_password
 from datetime import datetime
 
@@ -115,6 +116,26 @@ def my_profile(
 def list_departments(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     rows = db.query(Employee.department).distinct().all()
     return [r[0] for r in rows if r[0]]
+
+
+@router.get("/stats")
+def employee_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_hr_payroll_or_admin),
+):
+    by_dept = (
+        db.query(Employee.department, func.count(Employee.id))
+        .filter(Employee.is_active == True)
+        .group_by(Employee.department)
+        .all()
+    )
+    total_active = db.query(Employee).filter(Employee.is_active == True).count()
+    total_inactive = db.query(Employee).filter(Employee.is_active == False).count()
+    return {
+        "total_active": total_active,
+        "total_inactive": total_inactive,
+        "by_department": [{"department": r[0], "count": r[1]} for r in by_dept],
+    }
 
 
 @router.get("/{emp_id}", response_model=EmployeeOut)
