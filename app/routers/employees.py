@@ -47,7 +47,9 @@ def list_employees(
             (Employee.first_name.ilike(f"%{search}%")) |
             (Employee.last_name.ilike(f"%{search}%")) |
             (Employee.emp_id.ilike(f"%{search}%")) |
-            (Employee.email.ilike(f"%{search}%"))
+            (Employee.email.ilike(f"%{search}%")) |
+            (Employee.phone.ilike(f"%{search}%")) |
+            (Employee.designation.ilike(f"%{search}%"))
         )
     if department:
         q = q.filter(Employee.department == department)
