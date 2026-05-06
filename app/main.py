@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from datetime import datetime
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,5 +38,10 @@ app.include_router(leaves.router, prefix="/api/v1/leaves", tags=["Leaves"])
 app.include_router(pay_router.router, prefix="/api/v1/payroll", tags=["Payroll"])
 app.include_router(reports.router, prefix="/api/v1/reports", tags=["Reports"])
 app.include_router(settings.router, prefix="/api/v1/settings", tags=["Settings"])
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "version": "1.0.0", "timestamp": datetime.utcnow().isoformat() + "Z"}
+
 
 app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
