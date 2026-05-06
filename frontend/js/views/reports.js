@@ -40,6 +40,7 @@ Views.reports = async function(container) {
               <select class="form-control" id="att-m" style="width:150px" onchange="reloadAtt()">${monthOpts}</select>
               <input class="form-control" id="att-y" type="number" value="${year}" style="width:90px" onchange="reloadAtt()">
             </div>
+            <button class="btn btn-outline btn-sm" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px">${IC.print} Print</button>
           </div>
           <div class="card" style="padding:0">
             <div class="table-wrapper">
@@ -81,6 +82,7 @@ Views.reports = async function(container) {
             <div class="toolbar-left">
               <input class="form-control" id="lr-y" type="number" value="${year}" style="width:100px" onchange="reloadLeaves()">
             </div>
+            <button class="btn btn-outline btn-sm" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px">${IC.print} Print</button>
           </div>
           <div class="card" style="padding:0">
             <div class="table-wrapper">
