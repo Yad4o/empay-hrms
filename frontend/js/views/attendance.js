@@ -37,6 +37,37 @@ Views.attendance = async function(container) {
       </tr>`;
     }).join('') || `<tr><td colspan="${cols.length}"><div class="empty-state"><div class="empty-icon">📅</div><h3>No records</h3></div></td></tr>`;
 
+    const presentCount = records.filter(r => r.status === 'present' || r.status === 'late').length;
+    const absentCount  = records.filter(r => r.status === 'absent').length;
+    const leaveCount   = records.filter(r => r.status === 'on_leave').length;
+    const totalRecords = records.length;
+    const attRate = totalRecords ? Math.round((presentCount / totalRecords) * 100) : 0;
+
+    const summaryStrip = records.length ? `
+      <div style="display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap">
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--success)">
+          <div style="font-size:22px;font-weight:800;color:var(--success)">${presentCount}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Present</div>
+        </div>
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--danger)">
+          <div style="font-size:22px;font-weight:800;color:var(--danger)">${absentCount}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Absent</div>
+        </div>
+        <div class="card" style="flex:1;min-width:120px;padding:14px 18px;border-left:3px solid var(--info)">
+          <div style="font-size:22px;font-weight:800;color:var(--info)">${leaveCount}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">On Leave</div>
+        </div>
+        <div class="card" style="flex:2;min-width:180px;padding:14px 18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:11px;color:var(--text-muted)">Attendance Rate</div>
+            <div style="font-size:15px;font-weight:800;color:${attRate>=80?'var(--success)':attRate>=60?'var(--warning)':'var(--danger)'}">${attRate}%</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:4px;height:6px;overflow:hidden">
+            <div style="background:${attRate>=80?'var(--success)':attRate>=60?'var(--warning)':'var(--danger)'};height:100%;width:${attRate}%;border-radius:4px;transition:width 0.4s"></div>
+          </div>
+        </div>
+      </div>` : '';
+
     const markBtn = isEmp ? `
       <div class="card" style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px">
         <div>
@@ -61,6 +92,7 @@ Views.attendance = async function(container) {
 
     container.innerHTML = `
       ${markBtn}
+      ${summaryStrip}
       <div class="card" style="padding:0">
         <div class="toolbar" style="padding:16px 16px 0">
           <div class="toolbar-left">
