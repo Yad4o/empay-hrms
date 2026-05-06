@@ -23,9 +23,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="EmPay HRMS API", version="1.0.0", lifespan=lifespan)
 
+from app.config import settings
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
