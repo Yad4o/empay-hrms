@@ -82,7 +82,9 @@ async function navigate(view) {
   });
 
   const content = document.getElementById('content-area');
+  content.style.animation = 'none';
   content.innerHTML = '<div style="padding:60px;text-align:center;color:var(--text-muted)">Loading…</div>';
+  requestAnimationFrame(() => { content.style.animation = ''; });
 
   try {
     await VIEWS[view].render(content);
@@ -98,6 +100,15 @@ function routeFromHash() {
 }
 
 window.addEventListener('hashchange', routeFromHash);
+
+// ── Mobile sidebar auto-close ─────────────────────
+document.addEventListener('click', e => {
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburger');
+  if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== hamburger) {
+    sidebar.classList.remove('open');
+  }
+});
 
 // ── Boot ──────────────────────────────────────────
 (async function init() {
