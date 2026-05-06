@@ -3,10 +3,43 @@ Views.profile = async function(container) {
   document.getElementById('page-subtitle').textContent = 'View and update your information';
 
   async function render() {
-    let emp;
+    let emp, leaveBalance = [];
+    const isEmp = Auth.role === 'employee';
     try { emp = await api.get('/employees/me'); } catch(_) { emp = null; }
+    if (isEmp) leaveBalance = await api.get('/leaves/balance').catch(() => []);
 
     const me = { email: Auth.email, role: Auth.roleLabel() };
+
+    const tenure = emp ? (() => {
+      const start = new Date(emp.join_date);
+      const now = new Date();
+      const months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+      if (months < 1) return 'Just joined';
+      if (months < 12) return `${months} month${months > 1 ? 's' : ''} at EmPay`;
+      const yrs = Math.floor(months / 12);
+      const rem = months % 12;
+      return `${yrs} yr${yrs > 1 ? 's' : ''}${rem ? ' '+rem+' mo' : ''} at EmPay`;
+    })() : '';
+
+    const leaveTypeColor = { annual: '#0d9488', sick: '#dc2626', casual: '#0284c7', unpaid: '#94a3b8' };
+    const leaveBalHtml = leaveBalance.length ? `
+      <div class="card" style="margin-bottom:20px">
+        <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.umbrella} Leave Balance</span></div>
+        <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+          ${leaveBalance.map(b => {
+            const pct = b.allocated_days ? Math.min(100, (b.remaining_days / b.allocated_days) * 100) : 0;
+            const color = leaveTypeColor[b.leave_type] || '#0d9488';
+            return `<div style="flex:1;min-width:120px;background:var(--surface2);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border)">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted)">${b.leave_type.replace('_',' ')}</div>
+              <div style="font-size:22px;font-weight:800;color:${color};margin-top:4px">${b.remaining_days}</div>
+              <div style="font-size:11px;color:var(--text-muted)">of ${b.allocated_days} days</div>
+              <div style="margin-top:8px;background:var(--border);border-radius:4px;height:4px">
+                <div style="background:${color};border-radius:4px;height:100%;width:${pct}%"></div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>` : '';
 
     container.innerHTML = `
       <div style="max-width:700px;margin:0 auto">
@@ -15,13 +48,14 @@ Views.profile = async function(container) {
             <div class="emp-avatar" style="width:72px;height:72px;font-size:26px">
               ${emp ? emp.first_name[0]+emp.last_name[0] : me.email.slice(0,2).toUpperCase()}
             </div>
-            <div>
+            <div style="flex:1">
               <div style="font-size:20px;font-weight:700">${emp ? emp.first_name+' '+emp.last_name : me.email}</div>
               <div style="color:var(--text-secondary);margin-top:4px">${me.role} ${emp ? '· '+emp.emp_id : ''}</div>
-              ${emp ? `<div style="margin-top:6px"><span class="badge badge-primary">${emp.department}</span> <span style="font-size:12px;color:var(--text-secondary);margin-left:6px">${emp.designation}</span></div>` : ''}
+              ${emp ? `<div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="badge badge-primary">${emp.department}</span> <span style="font-size:12px;color:var(--text-secondary)">${emp.designation}</span>${tenure ? `<span style="font-size:11px;color:var(--text-muted)">· ${tenure}</span>` : ''}</div>` : ''}
             </div>
           </div>
         </div>
+        ${leaveBalHtml}
 
         ${emp ? `
         <div class="card" style="margin-bottom:20px">
