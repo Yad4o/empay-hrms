@@ -2,9 +2,11 @@
 function toast(msg, type = 'info') {
   const c = document.getElementById('toast-container');
   const t = document.createElement('div');
-  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const iconMap = { success: IC.check, error: IC.x, info: IC.info, warning: IC.warn };
+  const colorMap = { success: 'var(--success)', error: 'var(--danger)', info: 'var(--info)', warning: 'var(--warning)' };
   t.className = `toast toast-${type}`;
-  t.innerHTML = `<span>${icons[type] || '•'}</span><span>${msg}</span>`;
+  const iconColor = colorMap[type] || 'var(--text-secondary)';
+  t.innerHTML = `<span style="color:${iconColor};flex-shrink:0">${iconMap[type] || IC.info}</span><span>${msg}</span>`;
   c.appendChild(t);
   setTimeout(() => t.remove(), 3500);
 }
@@ -29,15 +31,15 @@ document.addEventListener('keydown', e => {
 
 // ── Navigation ────────────────────────────────────
 const VIEWS = {
-  dashboard:  { label: 'Dashboard',  icon: '⊞', render: Views.dashboard,  roles: null },
-  employees:  { label: 'Employees',  icon: '👥', render: Views.employees,  roles: ['admin','hr_officer','payroll_officer'] },
-  directory:  { label: 'Directory',  icon: '📋', render: Views.directory,  roles: ['employee'] },
-  attendance: { label: 'Attendance', icon: '📅', render: Views.attendance, roles: null },
-  leaves:     { label: 'Time Off',   icon: '🏖️', render: Views.leaves,     roles: null },
-  payroll:    { label: 'Payroll',    icon: '💰', render: Views.payroll,    roles: ['admin','payroll_officer'] },
-  reports:    { label: 'Reports',    icon: '📊', render: Views.reports,    roles: ['admin','hr_officer','payroll_officer'] },
-  settings:   { label: 'Settings',  icon: '⚙️', render: Views.settings,   roles: ['admin'] },
-  profile:    { label: 'My Profile', icon: '👤', render: Views.profile,    roles: null },
+  dashboard:  { label: 'Dashboard',  icon: IC.dashboard, render: Views.dashboard,  roles: null },
+  employees:  { label: 'Employees',  icon: IC.users,     render: Views.employees,  roles: ['admin','hr_officer','payroll_officer'] },
+  directory:  { label: 'Directory',  icon: IC.book,      render: Views.directory,  roles: ['employee'] },
+  attendance: { label: 'Attendance', icon: IC.calendar,  render: Views.attendance, roles: null },
+  leaves:     { label: 'Time Off',   icon: IC.umbrella,  render: Views.leaves,     roles: null },
+  payroll:    { label: 'Payroll',    icon: IC.payroll,   render: Views.payroll,    roles: ['admin','payroll_officer'] },
+  reports:    { label: 'Reports',    icon: IC.chart,     render: Views.reports,    roles: ['admin','hr_officer','payroll_officer'] },
+  settings:   { label: 'Settings',  icon: IC.sliders,   render: Views.settings,   roles: ['admin'] },
+  profile:    { label: 'My Profile', icon: IC.user,      render: Views.profile,    roles: null },
 };
 
 function buildNav() {
