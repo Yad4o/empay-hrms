@@ -29,8 +29,8 @@ Views.employees = async function(container) {
         <td><span class="badge ${e.is_active ? 'badge-success' : 'badge-danger'}">${e.is_active ? 'Active' : 'Inactive'}</span></td>
         <td>
           <div style="display:flex;gap:6px">
-            <button class="btn btn-outline btn-sm" onclick="viewEmployee(${e.id})">View</button>
-            ${canEdit ? `<button class="btn btn-ghost btn-sm" onclick="editEmployee(${e.id})">Edit</button>` : ''}
+            <button class="btn btn-outline btn-sm" onclick="viewEmployee(${e.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.eye} View</button>
+            ${canEdit ? `<button class="btn btn-ghost btn-sm" onclick="editEmployee(${e.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.edit} Edit</button>` : ''}
           </div>
         </td>
       </tr>`).join('') || `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👥</div><h3>No employees found</h3></div></td></tr>`;
@@ -53,7 +53,7 @@ Views.employees = async function(container) {
         </select>
       </div>
       <div class="toolbar-right">
-        ${canEdit ? `<button class="btn btn-primary" onclick="addEmployee()">+ Add Employee</button>` : ''}
+        ${canEdit ? `<button class="btn btn-primary" onclick="addEmployee()" style="display:inline-flex;align-items:center;gap:6px">${IC.plus} Add Employee</button>` : ''}
       </div>
     </div>
     <div class="card" style="padding:0">
