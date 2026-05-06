@@ -8,6 +8,8 @@
   <style>
     .pass-toggle { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:15px; }
     .pass-wrap { position:relative; }
+    .demo-creds code { transition: color 0.2s; }
+    .demo-creds code:hover { color: var(--accent); text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -22,7 +24,7 @@
     </div>
 
     <div class="login-heading">Sign in to your account</div>
-    <div class="login-desc">Enter your credentials to continue</div>
+    <div class="login-desc">Enter your credentials to access the dashboard</div>
 
     <div id="login-error" style="display:none;background:var(--danger-light);border:1px solid var(--danger);color:var(--danger);padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px"></div>
 
@@ -44,17 +46,18 @@
     </form>
 
     <div class="demo-creds">
-      <strong>Demo Credentials (all passwords: Admin@123)</strong>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px">
-        <code onclick="fillLogin('admin@empay.com')">admin@empay.com</code>
-        <span style="color:var(--text-muted)">Admin</span>
-        <code onclick="fillLogin('hr@empay.com')">hr@empay.com</code>
-        <span style="color:var(--text-muted)">HR Officer</span>
-        <code onclick="fillLogin('payroll@empay.com')">payroll@empay.com</code>
-        <span style="color:var(--text-muted)">Payroll Officer</span>
-        <code onclick="fillLogin('arjun@empay.com')">arjun@empay.com</code>
-        <span style="color:var(--text-muted)">Employee</span>
+      <strong>Demo Credentials — click any to auto-fill</strong>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+        <code onclick="fillLogin('admin@empay.com', this)">admin@empay.com</code>
+        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">Admin</span>
+        <code onclick="fillLogin('hr@empay.com', this)">hr@empay.com</code>
+        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">HR Officer</span>
+        <code onclick="fillLogin('payroll@empay.com', this)">payroll@empay.com</code>
+        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">Payroll Officer</span>
+        <code onclick="fillLogin('arjun@empay.com', this)">arjun@empay.com</code>
+        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">Employee</span>
       </div>
+      <div style="margin-top:8px;font-size:10px;color:var(--text-muted)">All passwords: Admin@123</div>
     </div>
   </div>
 </div>
@@ -86,10 +89,15 @@
     }
   }
 
-  function fillLogin(email) {
+  function fillLogin(email, el) {
     document.getElementById('email').value = email;
     document.getElementById('password').value = 'Admin@123';
-    document.getElementById('email').focus();
+    if (el) {
+      const orig = el.textContent;
+      el.textContent = '✓ filled';
+      el.style.color = 'var(--success)';
+      setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 1200);
+    }
   }
 
   function togglePass() {
