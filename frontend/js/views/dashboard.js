@@ -30,11 +30,11 @@ Views.dashboard = async function(container) {
     chartsHtml = `
       <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:24px">
         <div class="card">
-          <div class="section-header"><span class="section-title">Attendance Trend (This Month)</span></div>
+          <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.chart} Attendance Trend (This Month)</span></div>
           <div class="chart-container"><canvas id="chart-att"></canvas></div>
         </div>
         <div class="card">
-          <div class="section-header"><span class="section-title">Department Split</span></div>
+          <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.people} Department Split</span></div>
           <div class="chart-container"><canvas id="chart-dept"></canvas></div>
         </div>
       </div>`;
@@ -51,7 +51,7 @@ Views.dashboard = async function(container) {
       </tr>`).join('');
     payrollTable = `
       <div class="card" style="margin-top:24px">
-        <div class="section-header"><span class="section-title">Recent Payruns</span></div>
+        <div class="section-header"><span class="section-title" style="display:inline-flex;align-items:center;gap:8px">${IC.payroll} Recent Payruns</span></div>
         <div class="table-wrapper">
           <table>
             <thead><tr><th>Period</th><th>Total Net</th><th>Status</th><th>Action</th></tr></thead>
