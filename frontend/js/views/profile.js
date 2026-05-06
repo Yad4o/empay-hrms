@@ -55,6 +55,11 @@ Views.profile = async function(container) {
           </div>
         </div>` : `<div class="card"><div class="empty-state"><div class="empty-icon">👤</div><h3>No employee profile linked</h3><p>Contact HR to set up your profile</p></div></div>`}
 
+        <div class="card" style="margin-bottom:20px">
+          <div class="section-header"><span class="section-title">Recent Attendance</span></div>
+          <div id="profile-att-table" style="margin-top:8px"><div style="color:var(--text-muted);font-size:13px">Loading…</div></div>
+        </div>
+
         <div class="card">
           <div class="section-header"><span class="section-title">Change Password</span></div>
           <div style="margin-top:12px;max-width:360px">
@@ -64,6 +69,22 @@ Views.profile = async function(container) {
           </div>
         </div>
       </div>`;
+
+    api.get('/attendance/my').then(records => {
+      const recent = records.slice(0, 10);
+      const statusColors = { present: 'badge-success', absent: 'badge-danger', late: 'badge-warning', half_day: 'badge-info', on_leave: 'badge-primary', holiday: 'badge-muted' };
+      const attHtml = recent.length ? `<div class="table-wrapper"><table>
+        <thead><tr><th>Date</th><th>Status</th><th>Check In</th><th>Hours</th></tr></thead>
+        <tbody>${recent.map(r => `<tr>
+          <td>${r.date}</td>
+          <td><span class="badge ${statusColors[r.status]||'badge-muted'}">${r.status.replace('_',' ')}</span></td>
+          <td>${r.check_in ? new Date(r.check_in).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '—'}</td>
+          <td>${r.total_hours ? r.total_hours+'h' : '—'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>` : '<div style="color:var(--text-muted);font-size:13px;padding:8px 0">No attendance records yet.</div>';
+      const el = document.getElementById('profile-att-table');
+      if (el) el.innerHTML = attHtml;
+    }).catch(() => {});
 
     window.changePassword = async () => {
       try {
