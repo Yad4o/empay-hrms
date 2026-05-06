@@ -49,8 +49,8 @@ Views.leaves = async function(container) {
         <td>
           ${canApprove && l.status === 'pending' ? `
             <div style="display:flex;gap:4px">
-              <button class="btn btn-success btn-sm" onclick="approveLeave(${l.id})">Approve</button>
-              <button class="btn btn-danger btn-sm" onclick="rejectLeave(${l.id})">Reject</button>
+              <button class="btn btn-success btn-sm" onclick="approveLeave(${l.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.check} Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectLeave(${l.id})" style="display:inline-flex;align-items:center;gap:5px">${IC.x} Reject</button>
             </div>` : (l.rejection_reason ? `<span style="font-size:11px;color:var(--danger)">${l.rejection_reason}</span>` : '—')}
         </td>
       </tr>`).join('') || `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🏖️</div><h3>No leave requests</h3></div></td></tr>`;
@@ -66,8 +66,8 @@ Views.leaves = async function(container) {
         <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
           <div class="tab-list" style="margin:0;border:none">${statusTabs}</div>
           <div style="display:flex;gap:8px">
-            ${canApprove && !isEmp ? `<button class="btn btn-outline btn-sm" onclick="allocateLeave()">Allocate Leave</button>` : ''}
-            ${isEmp ? `<button class="btn btn-primary" onclick="applyLeave()">+ Apply Leave</button>` : ''}
+            ${canApprove && !isEmp ? `<button class="btn btn-outline btn-sm" onclick="allocateLeave()" style="display:inline-flex;align-items:center;gap:5px">${IC.plus} Allocate Leave</button>` : ''}
+            ${isEmp ? `<button class="btn btn-primary" onclick="applyLeave()" style="display:inline-flex;align-items:center;gap:6px">${IC.plus} Apply Leave</button>` : ''}
           </div>
         </div>
         <div class="table-wrapper">
