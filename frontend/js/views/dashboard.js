@@ -101,13 +101,16 @@ Views.dashboard = async function(container) {
         datasets: [{
           label: 'Present',
           data: trend.map(r => r.present),
-          borderColor: '#7c3aed',
-          backgroundColor: 'rgba(124,58,237,0.1)',
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.12)',
           fill: true,
           tension: 0.4,
           pointRadius: 3,
         }],
       });
+    } else {
+      const canvas = document.getElementById('chart-att');
+      if (canvas) canvas.parentElement.innerHTML = '<div style="height:260px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px">No attendance data this month</div>';
     }
 
     if (isAdmin || isHR) {
@@ -117,11 +120,14 @@ Views.dashboard = async function(container) {
           labels: depts.map(d => d.department),
           datasets: [{
             data: depts.map(d => d.count),
-            backgroundColor: ['#7c3aed','#ec4899','#3b82f6','#10b981','#f59e0b','#ef4444'],
+            backgroundColor: ['#6366f1','#ec4899','#38bdf8','#10b981','#f59e0b','#ef4444'],
             borderWidth: 2,
-            borderColor: '#161b22',
+            borderColor: '#0f1520',
           }],
         });
+      } else {
+        const canvas = document.getElementById('chart-dept');
+        if (canvas) canvas.parentElement.innerHTML = '<div style="height:260px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px">No departments found</div>';
       }
     }
   }
