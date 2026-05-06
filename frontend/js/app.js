@@ -18,7 +18,14 @@ function closeModal() {
   document.getElementById('modal-overlay').classList.add('hidden');
   document.getElementById('modal-container').innerHTML = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); return; }
+  if (e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    const searchInput = document.querySelector('#content-area input[type="text"], #content-area input:not([type])');
+    if (searchInput) searchInput.focus();
+  }
+});
 
 // ── Navigation ────────────────────────────────────
 const VIEWS = {
