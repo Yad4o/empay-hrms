@@ -3,61 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EmPay HRMS – Login</title>
+  <title>EmPay HRMS – Sign In</title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .pass-toggle { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:15px; }
     .pass-wrap { position:relative; }
-    .demo-creds code { transition: color 0.2s; }
-    .demo-creds code:hover { color: var(--accent); text-decoration: underline; }
+    .feature-item { display:flex; align-items:flex-start; gap:12px; margin-bottom:22px; }
+    .feature-dot { width:8px; height:8px; background:var(--primary); border-radius:50%; margin-top:6px; flex-shrink:0; }
+    .feature-text { font-size:13px; color:#94a3b8; line-height:1.6; }
+    .feature-text strong { color:#e2e8f0; display:block; margin-bottom:2px; }
   </style>
 </head>
 <body>
 <div id="login-page">
-  <div class="login-card">
+  <!-- Left dark panel -->
+  <div class="login-left">
     <div class="login-logo">
       <div class="login-logo-icon">💼</div>
       <div>
         <div class="login-title">EmPay</div>
-        <div class="login-subtitle">Human Resource Management</div>
+        <div class="login-subtitle">HRMS Platform</div>
       </div>
     </div>
 
-    <div class="login-heading">Sign in to your account</div>
-    <div class="login-desc">Enter your credentials to access the dashboard</div>
+    <div class="login-tagline">
+      <strong>Smart HR & Payroll,<br>Simplified.</strong>
+      Everything your team needs to manage people, attendance, and payroll — in one place.
+    </div>
 
-    <div id="login-error" style="display:none;background:var(--danger-light);border:1px solid var(--danger);color:var(--danger);padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px"></div>
-
-    <form onsubmit="doLogin(event)">
-      <div class="form-group">
-        <label class="form-label">Email Address</label>
-        <input class="form-control" id="email" type="email" placeholder="you@company.com" required autocomplete="email">
+    <div style="margin-top:48px">
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Role-Based Access</strong>Admin, HR, Payroll, and Employee views — each see exactly what they need.</div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <div class="pass-wrap">
-          <input class="form-control" id="password" type="password" placeholder="Your password" required autocomplete="current-password" style="padding-right:36px">
-          <button type="button" class="pass-toggle" onclick="togglePass()">👁</button>
-        </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Automated Payroll</strong>PF, professional tax, LOP deductions calculated per employee every month.</div>
       </div>
-      <button type="submit" class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:11px;margin-top:4px;font-size:14px">
-        Sign In
-      </button>
-    </form>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Leave Management</strong>Apply, approve and track annual, sick, casual, and unpaid leave.</div>
+      </div>
+    </div>
 
     <div class="demo-creds">
-      <strong>Demo Credentials — click any to auto-fill</strong>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
-        <code onclick="fillLogin('admin@empay.com', this)">admin@empay.com</code>
-        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">Admin</span>
-        <code onclick="fillLogin('hr@empay.com', this)">hr@empay.com</code>
-        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">HR Officer</span>
-        <code onclick="fillLogin('payroll@empay.com', this)">payroll@empay.com</code>
-        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">Payroll Officer</span>
-        <code onclick="fillLogin('arjun@empay.com', this)">arjun@empay.com</code>
-        <span style="color:var(--text-muted);font-size:11px;display:flex;align-items:center">Employee</span>
+      <strong>Demo Credentials — click to auto-fill</strong>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px">
+        <code onclick="fillLogin('admin@empay.com',this)">admin@empay.com</code>
+        <span style="color:#64748b;font-size:11px;display:flex;align-items:center">Admin</span>
+        <code onclick="fillLogin('hr@empay.com',this)">hr@empay.com</code>
+        <span style="color:#64748b;font-size:11px;display:flex;align-items:center">HR Officer</span>
+        <code onclick="fillLogin('payroll@empay.com',this)">payroll@empay.com</code>
+        <span style="color:#64748b;font-size:11px;display:flex;align-items:center">Payroll</span>
+        <code onclick="fillLogin('arjun@empay.com',this)">arjun@empay.com</code>
+        <span style="color:#64748b;font-size:11px;display:flex;align-items:center">Employee</span>
       </div>
-      <div style="margin-top:8px;font-size:10px;color:var(--text-muted)">All passwords: Admin@123</div>
+      <div style="margin-top:8px;font-size:10px;color:#475569">All passwords: Admin@123</div>
+    </div>
+  </div>
+
+  <!-- Right white form -->
+  <div class="login-right">
+    <div class="login-card">
+      <div style="margin-bottom:30px">
+        <div class="login-heading">Welcome back</div>
+        <div class="login-desc">Sign in to your EmPay account to continue</div>
+      </div>
+
+      <div id="login-error" style="display:none;background:var(--danger-light);border:1px solid rgba(220,38,38,0.25);color:var(--danger);padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px"></div>
+
+      <form onsubmit="doLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-control" id="email" type="email" placeholder="you@company.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="pass-wrap">
+            <input class="form-control" id="password" type="password" placeholder="Your password" required autocomplete="current-password" style="padding-right:38px">
+            <button type="button" class="pass-toggle" onclick="togglePass()">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:11px;font-size:14px;margin-top:6px">
+          Sign In
+        </button>
+      </form>
+
+      <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text-muted)">
+        Powered by <strong style="color:var(--primary)">EmPay HRMS</strong>
+      </div>
     </div>
   </div>
 </div>
@@ -92,12 +126,10 @@
   function fillLogin(email, el) {
     document.getElementById('email').value = email;
     document.getElementById('password').value = 'Admin@123';
-    if (el) {
-      const orig = el.textContent;
-      el.textContent = '✓ filled';
-      el.style.color = 'var(--success)';
-      setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 1200);
-    }
+    const orig = el.textContent;
+    el.textContent = '✓ filled';
+    el.style.color = '#2dd4bf';
+    setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 1200);
   }
 
   function togglePass() {
